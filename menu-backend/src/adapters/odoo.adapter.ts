@@ -115,11 +115,12 @@ class OdooAdapter {
         id: product.id,
         name: product.name,
         price: product.list_price,
-        currency: "USD",
+        currency: "CUP",
         description: product.description_sale || "",
         imageUrl: product.image_1920
-          ? `${env.ODOO_URL}/web/image/product.template/${product.id}/image_1920`
+          ? `data:image/png;base64,${product.image_1920}`
           : null,
+        localImageUrl: null,
         categoryId,
         categoryName: categoryId ? (categoryMap.get(categoryId) ?? null) : null,
         isAvailable: product.available_in_pos,
@@ -127,6 +128,17 @@ class OdooAdapter {
         updatedAt: product.write_date ?? new Date().toISOString(),
       };
     });
+  }
+
+  async fetchImageBuffer(imageUrl: string): Promise<Buffer | null> {
+    const response = await fetch(imageUrl);
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    return Buffer.from(arrayBuffer);
   }
 }
 

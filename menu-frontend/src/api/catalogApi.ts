@@ -1,4 +1,4 @@
-const endpointUrl = "http://localhost:4000/api";
+import { endpointUrl } from "./utils";
 
 export async function fetchCatalog() {
   const res = await fetch(`${endpointUrl}/menu/catalog`);

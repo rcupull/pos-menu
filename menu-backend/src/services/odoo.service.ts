@@ -1,9 +1,5 @@
-import type {
-  MenuCatalog,
-  MenuCategory,
-  MenuProduct,
-} from "../types/catalog.js";
-import { odooAdapter } from "../adapters/odoo.adapter";
+import { odooAdapter } from "../adapters/odoo.adapter.js";
+import type { MenuCatalog } from "../types/catalog.js";
 
 class OdooService {
   async fetchCatalog(): Promise<MenuCatalog> {
@@ -17,6 +13,10 @@ class OdooService {
       categories,
       products,
     };
+  }
+
+  async fetchImageBuffer(imageUrl: string): Promise<Buffer | null> {
+    return odooAdapter.fetchImageBuffer(imageUrl);
   }
 }
 

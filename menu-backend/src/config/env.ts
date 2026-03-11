@@ -6,10 +6,11 @@ const envSchema = z.object({
   NODE_ENV: z.string().default("development"),
   ODOO_URL: z.string().url(),
   ODOO_DATABASE: z.string().min(1),
-  ODOO_API_KEY: z.string().min(1),
   ODOO_USERNAME: z.string().min(1),
+  ODOO_API_KEY: z.string().min(1),
   SYNC_INTERVAL_SECONDS: z.coerce.number().default(300),
-  CACHE_FILE: z.string().default("src/cache/catalog-cache.json"),
+  CACHE_FILE: z.string().default("data/catalog.json"),
+  IMAGES_DIR: z.string().default("data/images"),
 });
 
 export const env = envSchema.parse(process.env);
