@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -e
+# Nos situamos en la carpeta del script
+cd "$(dirname "$0")"
 
 echo "Installing dependencies..."
 
