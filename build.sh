@@ -3,6 +3,9 @@
 # Nos situamos en la carpeta del script
 cd "$(dirname "$0")"
 
+echo "Updating repositories..."
+git pull
+
 echo "Installing dependencies..."
 
 npm install --prefix menu-backend
