@@ -16,3 +16,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/menu", menuRouter);
+
+// Serve frontend
+const frontendPath = path.join(__dirname, "../../menu-frontend/dist");
+app.use(express.static(frontendPath));
