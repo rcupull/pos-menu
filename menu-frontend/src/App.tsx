@@ -50,16 +50,16 @@ export default function App() {
             />
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/30 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" /> */}
 
           {/* 3. Contenido de Texto */}
           <div className="absolute inset-0 flex flex-col px-[5vw] py-[5vh]">
-            <h1 className="max-w-[12ch] text-[clamp(3rem,6vw,6.5rem)] font-extrabold leading-none text-white drop-shadow-[0_8px_20px_rgba(0,0,0,0.9)]">
+            <h1 className="max-w-[12ch] text-[clamp(3rem,6vw,6.5rem)] font-extrabold leading-none text-black drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)]">
               {product.name}
             </h1>
 
-            <div className="mt-8 text-[clamp(3rem,7vw,7rem)] font-black leading-none text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+            <div className="mt-8 text-[clamp(3rem,7vw,7rem)] font-black leading-none text-black drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
               {formatPrice(product.price, product.currency)}
             </div>
           </div>
