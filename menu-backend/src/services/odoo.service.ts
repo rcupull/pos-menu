@@ -14,10 +14,6 @@ class OdooService {
       products,
     };
   }
-
-  async fetchImageBuffer(imageUrl: string): Promise<Buffer | null> {
-    return odooAdapter.fetchImageBuffer(imageUrl);
-  }
 }
 
 export const odooService = new OdooService();

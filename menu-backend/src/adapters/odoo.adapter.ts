@@ -100,8 +100,8 @@ class OdooAdapter {
           "name",
           "list_price",
           "description_sale",
-          "image_128", // Optimización: Odoo 18 genera tamaños específicos. 128 o 256 suelen bastar para catálogos.
-          "pos_categ_ids", // CAMBIO IMPORTANTE: Odoo moderno permite múltiples categorías POS
+          "image_1024",
+          "pos_categ_ids",
           "write_date",
         ],
       },
@@ -123,9 +123,8 @@ class OdooAdapter {
         price: product.list_price,
         currency: "CUP",
         description: product.description_sale || "",
-        // Las imágenes en Odoo 18 siguen viniendo en Base64 vía XML-RPC
-        imageUrl: product.image_128
-          ? `data:image/png;base64,${product.image_128.replace(/\s/g, "")}`
+        imageUrl: product.image_1024
+          ? `data:image/png;base64,${product.image_1024.replace(/\s/g, "")}`
           : null,
         localImageUrl: null,
         categoryId,
@@ -135,20 +134,6 @@ class OdooAdapter {
         updatedAt: product.write_date ?? new Date().toISOString(),
       };
     });
-  }
-
-  // Si vas a usar buffers, es mejor pedir la imagen directamente a Odoo mediante su ID
-  async fetchImageBuffer(productId: number): Promise<Buffer | null> {
-    const result = await this.executeKw<any[]>(
-      "product.template",
-      "read",
-      [[productId]],
-      { fields: ["image_1920"] },
-    );
-
-    if (!result || result.length === 0 || !result[0].image_1920) return null;
-
-    return Buffer.from(result[0].image_1920, "base64");
   }
 }
 
