@@ -37,7 +37,9 @@ class OdooAdapter {
     ]);
 
     if (!uid) {
-      throw new Error("No se pudo autenticar en Odoo");
+      throw new Error(
+        "No se pudo autenticar en Odoo 18. Verifique credenciales.",
+      );
     }
 
     this.uid = uid;
@@ -69,7 +71,7 @@ class OdooAdapter {
       "search_read",
       [[]],
       {
-        fields: ["name", "sequence"],
+        fields: ["id", "name", "sequence"],
         order: "sequence asc",
       },
     );
@@ -82,6 +84,7 @@ class OdooAdapter {
   }
 
   async fetchProducts(): Promise<MenuProduct[]> {
+    // En Odoo 18, 'available_in_pos' sigue siendo válido, pero 'active' es implícito en search_read a menos que se diga lo contrario
     const products = await this.executeKw<any[]>(
       "product.template",
       "search_read",
@@ -89,18 +92,17 @@ class OdooAdapter {
         [
           ["available_in_pos", "=", true],
           ["sale_ok", "=", true],
-          ["active", "=", true],
         ],
       ],
       {
         fields: [
+          "id",
           "name",
           "list_price",
           "description_sale",
-          "image_1920",
-          "pos_categ_id",
+          "image_1024",
+          "pos_categ_ids",
           "write_date",
-          "available_in_pos",
         ],
       },
     );
@@ -109,7 +111,11 @@ class OdooAdapter {
     const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
 
     return products.map((product, index) => {
-      const categoryId = product.pos_categ_id ? product.pos_categ_id[0] : null;
+      // Odoo 18 usa Many2many para categorías POS (pos_categ_ids), tomamos la primera si existe
+      const categoryId =
+        product.pos_categ_ids && product.pos_categ_ids.length > 0
+          ? product.pos_categ_ids[0]
+          : null;
 
       return {
         id: product.id,
@@ -117,28 +123,17 @@ class OdooAdapter {
         price: product.list_price,
         currency: "CUP",
         description: product.description_sale || "",
-        imageUrl: product.image_1920
-          ? `data:image/png;base64,${product.image_1920}`
+        imageUrl: product.image_1024
+          ? `data:image/png;base64,${product.image_1024.replace(/\s/g, "")}`
           : null,
         localImageUrl: null,
         categoryId,
         categoryName: categoryId ? (categoryMap.get(categoryId) ?? null) : null,
-        isAvailable: product.available_in_pos,
+        isAvailable: true, // Si el search_read lo trajo, es porque cumple los filtros
         sortOrder: index + 1,
         updatedAt: product.write_date ?? new Date().toISOString(),
       };
     });
-  }
-
-  async fetchImageBuffer(imageUrl: string): Promise<Buffer | null> {
-    const response = await fetch(imageUrl);
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-    return Buffer.from(arrayBuffer);
   }
 }
 
